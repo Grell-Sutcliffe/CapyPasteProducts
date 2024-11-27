@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 def parse_by_name_vasko(product):
 
     driver = webdriver.Chrome()
-    driver.fullscreen_window() # открывается сайт и делается на весь экран (это важно, иначе нет окна поиска)
+    driver.set_window_size(1920,1080) # открывается сайт и делается на весь экран (это важно, иначе нет окна поиска)
 
     driver.get("https://vasko.ru/#")
 
