@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import json
+from parsers.vasko import parse_by_name_vasko
 
 app = Flask(__name__)
 
@@ -11,16 +12,25 @@ data = [{"name": "Товар1", "price": 100, "href" :  "https://5ka.ru/product/
 
 @app.route("/<req>", methods=["GET", "POST"])
 def search(req):
-    #if 'userLogged' not in session or session['userLogged'] != username:
-    #    abort(401)
-    #session.clear()
     search_res = []
-    if request.method == "POST":
+
+    if request.method == "POST": # получаем текст введенный пользователем в поле
         return redirect(url_for('search', req=request.form['product_name']))
-    if req:
+
+    # if req: # тесты со словарем
+    #     search_request = req
+    #     search_res = [item for item in data if item["name"] in search_request]
+
+    print(req)
+    search_res = None
+    if req != '' and req != 'favicon.ico': # проверяет что ввод не пустой и не рандомно вылезающий везде ввод favion
         search_request = req
-        search_res = [item for item in data if item["name"] in search_request]
-    return render_template("search.html", products=search_res)
+        search_res = parse_by_name_vasko(req) # парсит сайт в реальном времени
+        print('app', search_res)
+    # перенаправление на страницу с названием товара в пути
+        return render_template("search.html", products=search_res)
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
 
