@@ -5,6 +5,9 @@ from selenium.webdriver.chrome.options import Options
 from IPython.display import Image
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 # product = "F2J3NS1W"
 
 
@@ -48,5 +51,8 @@ def parse_by_name_vasko(product):
                  'pic': str(product_image)
                  }]
     except:
-        driver.quit()
+        try:
+            driver.quit()
+        except:
+            logging.debug("Селениум поставь, умник")
         return []
