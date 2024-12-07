@@ -42,11 +42,13 @@ def search(req):
     if req != '' and req != 'favicon.ico':
         search_request = req
         search_res = parse_by_name_vasko(req)  # парсит сайт в реальном времени
-        search_added_res = [
+        search_added_res  = [
             item for item in data_history if search_request in item['name']]
+        search_res = search_res + search_added_res
+        search_res = sorted(search_res, key=lambda x: x["price"])
         logging.debug('app', search_res)
         if 'userLogged' in session:
-            session['data_history'] = search_res
+            session['data_history'] = search_res[:5] if len(search_res) > 6 else search_res
             logging.debug("AAA")
     # перенаправление на страницу с названием товара в пути
         return render_template("search.html", products=search_res)
@@ -59,7 +61,7 @@ def favicon():
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    # session.clear()
+    session.clear()
     logging.debug("mda")
     if request.method == "POST" and request.form['product_name'] != '':
         return redirect(url_for('search', req=request.form['product_name']))
