@@ -17,7 +17,7 @@ class Parser_Technodeus:
         self.initial_soup = BeautifulSoup(self.response.text, 'html.parser')
         self.all_products = []
         self.category_divs = self.initial_soup.find(
-            'div', class_='list-item-subs-wrapper').find_all('div', class_='list-item-part')
+            'div', class_='list-item-subs-wrapper').find_all('div', class_='list-item-part', recursive=False)
         self.category_links = [self.start_url + category_div.find('a')['href']
                                for category_div in self.category_divs[2:]]  # 2: - skip first two categories, they are not needed
 
@@ -31,9 +31,12 @@ class Parser_Technodeus:
     def get_paggination_num(self, url) -> int:
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        paggination = soup.find('ul', class_='pagination')
-        pagginations = paggination.find_all('a')
-        return int(pagginations[-1].text)
+        try:
+            paggination = soup.find('ul', class_='pagination')
+            pagginations = paggination.find_all('a')
+            return int(pagginations[-1].text)
+        except (IndexError, AttributeError):
+            return 1
 
     def parse_category(self, url) -> None:
         logging.debug(f'Parsing category {url}')
