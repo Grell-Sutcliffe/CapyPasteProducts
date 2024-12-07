@@ -32,6 +32,7 @@ def search(req):
     if req != '' and req != 'favicon.ico': # проверяет что ввод не пустой и не рандомно вылезающий везде ввод favion
         search_request = req
         search_res = parse_by_name_vasko(req) # парсит сайт в реальном времени
+
         print('app', search_res)
         if 'userLogged' in session:
             session['data_history'] = search_res
