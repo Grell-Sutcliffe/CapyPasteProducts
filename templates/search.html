@@ -3,30 +3,59 @@
 {% block searching %}
 <h2>Результаты:</h2>
 {% if products %}
-<ul>
-    {% for product in products %}
-    <li>{{ product.name }} - {{ product.price }} руб. - <a href="{{product.href}}" target="_blank"> ссылка</a></li>
+<h3>Фильтры:</h3>
+<form method="POST">
+    <h3>Популярные слова:</h3>
+    {% for word in top_words %}
+        <label>{{ word }}</label>
+        <select name="{{ word }}">
+            <option value="nothing">Ничего</option>
+            <option value="include" {% if word in filters.include %}selected{% endif %}>Оставить</option>
+            <option value="exclude" {% if word in filters.exclude %}selected{% endif %}>Исключить</option>
+        </select>
+        <br>
     {% endfor %}
-</ul>
+
+    <h3>Пользовательские фильтры:</h3>
+    {% for custom_filter in custom_filters %}
+        <input type="hidden" name="custom_filters" value="{{ custom_filter }}">
+        <label>{{ custom_filter }}</label>
+        <select name="{{ custom_filter }}">
+            <option value="nothing">Ничего</option>
+            <option value="include" {% if custom_filter in filters.include %}selected{% endif %}>Оставить</option>
+            <option value="exclude" {% if custom_filter in filters.exclude %}selected{% endif %}>Исключить</option>
+        </select>
+        <br>
+    {% endfor %}
+
+    <!-- Поле для добавления нового пользовательского фильтра -->
+    <label for="custom_filter">Добавить фильтр:</label>
+    <input type="text" id="custom_filter" name="custom_filter" placeholder="Введите слово">
+    <button type="submit" name="add_custom_filter">+</button>
+
+    <button type="submit" name="apply_filters">Применить</button>
+</form>
+
 <table>
     <tr>
-        <td>Название:</td>
-        <td>цена (руб)</td>
-        <td>ссылОчка</td>
+        <td>Картинка</td>
+        <td>Название</td>
+        <td>Цена (руб)</td>
+        <td>Ссылка</td>
     </tr>
     {% for product in products %}
     <tr>
-        <td><img src="{{product.pic}}" alt="я джифка" width="100" height="70"></td>
+        <td><img src="{{product.pic}}" alt="Товар" width="100" height="70"></td>
         <td>{{ product.name }}</td>
         <td>{{ product.price }}</td>
-        <td><a href="{{product.href}}" target="_blank"> ссылка</a></td>
-
+        <td><a href="{{product.href}}" target="_blank">ссылка</a></td>
     </tr>
     {% endfor %}
 </table>
+
+
+
 {% else %}
 <p>Результатов пока нет</p>
 {% endif %}
-
-
 {% endblock %}
