@@ -5,12 +5,13 @@ import logging
 import re
 import random
 from time import sleep
+from filter_bazhar import is_preposition
+import string
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 class Parser_Technodeus:
-
     def __init__(self):
         self.start_url = 'https://technodeus.ru'
         self.response = requests.get(self.start_url)
@@ -41,8 +42,8 @@ class Parser_Technodeus:
     def parse_category(self, url) -> None:
         logging.debug(f'Parsing category {url}')
         num = self.get_paggination_num(url)
-        print(url)
-        print(f'num: {num}')
+        # print(url)
+        # print(f'num: {num}')
         for i in range(1, num + 1):
             logging.debug("Page url: " + url + f'?page={i}')
             self.parse_page(url + f'?page={i}')
@@ -67,7 +68,8 @@ class Parser_Technodeus:
                 'name': product_name,
                 'price': product_price,
                 'href': product_href,
-                'pic': product_pic
+                'pic': product_pic,
+                'set_words': list(set([word.lower().strip(string.punctuation + "«»‘’“”") for word in product_name.split() if not is_preposition(word)]))
             }
 
             self.all_products.append(product_data)
